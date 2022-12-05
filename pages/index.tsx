@@ -72,7 +72,7 @@ export default function Home() {
               onChange={(event) => setName(event.target.value)}
               placeholder="John Doe"
             />
-            <h3>What is the person&apos;s position?</h3>
+            <h3>What is their position?</h3>
             <input
               className={styles.input}
               type="text"
@@ -81,7 +81,7 @@ export default function Home() {
               placeholder="Professor at Stanford"
             />
             <h3>
-              What&apos;s the reason you are contacting this person? (please be
+              What&apos;s the reason you are contacting them? (please be
               specific)
             </h3>
             <input
@@ -91,7 +91,7 @@ export default function Home() {
               onChange={(event) => setReason(event.target.value)}
               placeholder="I want to work in their lab"
             />
-            <h3>How did you hear about this person?</h3>
+            <h3>How did you hear about them?</h3>
             <input
               className={styles.input}
               type="text"
