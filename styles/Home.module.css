@@ -76,6 +76,10 @@
   height: 20%;
 }
 
+.checkbox {
+  margin-top: 3%;
+}
+
 .card {
   margin: 1rem;
   padding: 1.5rem;
