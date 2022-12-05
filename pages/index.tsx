@@ -110,7 +110,7 @@ export default function Home() {
                   defaultChecked={formal}
                   onChange={() => setFormal(!formal)}
                 />
-                Make it formal?
+                Make it formal
               </label>
             </div>
             <div>
