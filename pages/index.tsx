@@ -8,45 +8,43 @@ export default function Home() {
   const [position, setPosition] = useState("");
   const [reason, setReason] = useState("");
   const [connection, setConnection] = useState("");
-  const [search, setSearch] = useState("");
+  const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { Configuration, OpenAIApi } = require("openai");
 
   const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: process.env.OPENAI_API_KEY,
   });
 
   const openai = new OpenAIApi(configuration);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (search) {
-        setIsLoading(true);
-        const response = await openai.createCompletion({
-          model: "text-davinci-003",
-          prompt: search,
-          temperature: 0.7,
-          max_tokens: 1000,
-          top_p: 1,
-          frequency_penalty: 0,
-          presence_penalty: 0,
-        });
+  const writeEmail = async () => {
+    if (name) {
+      setIsLoading(true);
+      let prompt = `Generate a formal and confident email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`;
+      const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: prompt,
+        temperature: 0.7,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      });
 
-        if (response.status == "200") {
-          let result = response.data.choices[0].text
-            ? response.data.choices[0].text
-            : "Unable to generate, please make sure you have written sufficient information.";
-          setResult(result);
-          setIsLoading(false);
-        } else {
-          setResult("Cannot generate email, please try again later.");
-        }
+      if (response.status == "200") {
+        let result = response.data.choices[0].text
+          ? response.data.choices[0].text
+          : "Unable to generate, please make sure you have written sufficient information.";
+        setResult(result);
         setIsLoading(false);
+      } else {
+        setResult("Cannot generate email, please try again later.");
       }
-    };
+      setIsLoading(false);
+    }
+  };
 
-    fetchData();
-  }, [search]);
   return (
     <div className={styles.container}>
       <Head>
@@ -68,6 +66,7 @@ export default function Home() {
           <div className={styles.card}>
             <h3>What is the person&apos;s name?</h3>
             <input
+              className={styles.input}
               type="text"
               value={name}
               onChange={(event) => setName(event.target.value)}
@@ -75,6 +74,7 @@ export default function Home() {
             />
             <h3>What is the person&apos;s position?</h3>
             <input
+              className={styles.input}
               type="text"
               value={position}
               onChange={(event) => setPosition(event.target.value)}
@@ -85,6 +85,7 @@ export default function Home() {
               specific)
             </h3>
             <input
+              className={styles.input}
               type="text"
               value={reason}
               onChange={(event) => setReason(event.target.value)}
@@ -92,17 +93,14 @@ export default function Home() {
             />
             <h3>How did you hear about this person?</h3>
             <input
+              className={styles.input}
               type="text"
-              value={reason}
-              onChange={(event) => setReason(event.target.value)}
+              value={connection}
+              onChange={(event) => setConnection(event.target.value)}
               placeholder="I found their name in a research paper"
             />
             <div>
-              <button
-                className="text-xs"
-                type="button"
-                onClick={() => setSearch(name)}
-              >
+              <button type="button" onClick={() => writeEmail()}>
                 Generate
               </button>
             </div>
