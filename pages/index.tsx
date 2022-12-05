@@ -19,7 +19,7 @@ export default function Home() {
   const openai = new OpenAIApi(configuration);
 
   const writeEmail = async () => {
-    if (name) {
+    if (name && position && reason) {
       setIsLoading(true);
       let prompt = `Generate a formal and confident email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`;
       const response = await openai.createCompletion({
