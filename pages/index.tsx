@@ -3,30 +3,44 @@ import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  const [data, setData] = useState({ text: "" });
-  const [name, setName] = useState();
-  const [position, setPosition] = useState();
-  const [reason, setReason] = useState();
-  const [connection, setConnection] = useState();
-  const [search, setSearch] = useState();
+  const [result, setResult] = useState("");
+  const [name, setName] = useState("");
+  const [position, setPosition] = useState("");
+  const [reason, setReason] = useState("");
+  const [connection, setConnection] = useState("");
+  const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { Configuration, OpenAIApi } = require("openai");
+
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const openai = new OpenAIApi(configuration);
 
   useEffect(() => {
     const fetchData = async () => {
       if (search) {
         setIsLoading(true);
-        console.log(search);
-        const res = await fetch(`/api/openai`, {
-          body: JSON.stringify({
-            name: search,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
+        const response = await openai.createCompletion({
+          model: "text-davinci-003",
+          prompt: search,
+          temperature: 0.7,
+          max_tokens: 1000,
+          top_p: 1,
+          frequency_penalty: 0,
+          presence_penalty: 0,
         });
-        const data = await res.json();
-        setData(data);
+
+        if (response.status == "200") {
+          let result = response.data.choices[0].text
+            ? response.data.choices[0].text
+            : "Unable to generate, please make sure you have written sufficient information.";
+          setResult(result);
+          setIsLoading(false);
+        } else {
+          setResult("Cannot generate email, please try again later.");
+        }
         setIsLoading(false);
       }
     };
@@ -52,32 +66,36 @@ export default function Home() {
 
         <div className={styles.grid}>
           <div className={styles.card}>
-            <h3>What is the person's name?</h3>
+            <h3>What is the person&apos;s name?</h3>
             <input
               type="text"
               value={name}
               onChange={(event) => setName(event.target.value)}
+              placeholder="John Doe"
             />
-            <h3>What is the person's position?</h3>
+            <h3>What is the person&apos;s position?</h3>
             <input
               type="text"
               value={position}
               onChange={(event) => setPosition(event.target.value)}
+              placeholder="Professor at Stanford"
             />
             <h3>
-              What's the reason you are contacting this person? (please be
+              What&apos;s the reason you are contacting this person? (please be
               specific)
             </h3>
             <input
               type="text"
               value={reason}
               onChange={(event) => setReason(event.target.value)}
+              placeholder="I want to work in their lab"
             />
-            <h3>How do you know this person?</h3>
+            <h3>How did you hear about this person?</h3>
             <input
               type="text"
               value={reason}
               onChange={(event) => setReason(event.target.value)}
+              placeholder="I found their name in a research paper"
             />
             <div>
               <button
@@ -90,14 +108,15 @@ export default function Home() {
             </div>
           </div>
           <h4>Email: </h4>
-          {isLoading ? <div> Generating ...</div> : <span>{data.text}</span>}
+          {isLoading ? <p> &nbsp; Generating ...</p> : <span>{result}</span>}
         </div>
         <div>
           Created by Ahmed Ahres - feel free to reach out on{" "}
           <a
             className={styles.contact}
             href="https://twitter.com/Boudatw"
-            href="_blank"
+            target="_blank"
+            rel="noreferrer"
           >
             Twitter
           </a>{" "}
