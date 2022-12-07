@@ -57,8 +57,8 @@ export default function Home() {
         </h1>
         <h2>
           <a>
-            Introduce yourself like a pro with our free easy-to-use email
-            generator.
+            Introduce yourself like a pro with our free and easy-to-use email
+            generator!
           </a>
         </h2>
 
