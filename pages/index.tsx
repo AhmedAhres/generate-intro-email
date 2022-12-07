@@ -60,8 +60,8 @@ export default function Home() {
         </h1>
         <h2>
           <a>
-            This tool will generate a personalized introduction email to use as
-            template so you don't have to write it yourself
+            Introduce yourself like a pro with our easy-to-use email generator
+            powered by AI.
           </a>
         </h2>
 
