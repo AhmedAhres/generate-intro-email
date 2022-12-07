@@ -7,7 +7,6 @@ export default function Home() {
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
   const [reason, setReason] = useState("");
-  const [formal, setFormal] = useState(false);
   const [connection, setConnection] = useState("");
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -22,9 +21,7 @@ export default function Home() {
   const writeEmail = async () => {
     if (name && position && reason) {
       setIsLoading(true);
-      let prompt = `Generate a confident ${
-        formal ? "and formal " : ""
-      }email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`;
+      let prompt = `Generate a confident and professional email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`;
       const response = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: prompt,
@@ -102,17 +99,6 @@ export default function Home() {
               onChange={(event) => setConnection(event.target.value)}
               placeholder="I found their name in a research paper"
             />
-            <div>
-              <label>
-                <input
-                  className={styles.checkbox}
-                  type="checkbox"
-                  defaultChecked={formal}
-                  onChange={() => setFormal(!formal)}
-                />
-                Make it formal
-              </label>
-            </div>
             <div>
               <button type="button" onClick={() => writeEmail()}>
                 Generate
