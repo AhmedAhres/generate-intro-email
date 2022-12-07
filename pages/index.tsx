@@ -117,7 +117,11 @@ export default function Home() {
             </div>
 
             <h4>Email: </h4>
-            {isLoading ? <span>Generating ...</span> : <span>{result}</span>}
+            {isLoading ? (
+              <p className={styles.generate}>Generating ... </p>
+            ) : (
+              <p className={styles.result}>{result}</p>
+            )}
           </div>
         </div>
         <div>
