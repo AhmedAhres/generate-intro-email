@@ -1,6 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useState, useEffect } from "react";
+import React from "react";
 
 export default function Home() {
   const [result, setResult] = useState("");
@@ -31,17 +32,27 @@ export default function Home() {
         frequency_penalty: 0,
         presence_penalty: 0,
       });
-
       if (response.status == "200") {
-        let result = response.data.choices[0].text
+        let result = response.data.choices
           ? response.data.choices[0].text
-          : "Unable to generate, please make sure you have written sufficient information.";
+              .split("\n")
+              .map((line: any, index: any) => (
+                <React.Fragment key={index}>
+                  <br />
+                  {line}
+                </React.Fragment>
+              ))
+          : "Unable to generate, please check back later or reach out!";
         setResult(result);
         setIsLoading(false);
       } else {
         setResult("Cannot generate email, please try again later.");
       }
       setIsLoading(false);
+    } else {
+      setResult(
+        "Please make sure you have written a response to the first 3 questions."
+      );
     }
   };
 
@@ -104,9 +115,10 @@ export default function Home() {
                 Generate
               </button>
             </div>
+
+            <h4>Email: </h4>
+            {isLoading ? <span>Generating ...</span> : <span>{result}</span>}
           </div>
-          <h4>Email: </h4>
-          {isLoading ? <p> &nbsp; Generating ...</p> : <span>{result}</span>}
         </div>
         <div>
           Created by Ahmed Ahres - feel free to reach out on{" "}
