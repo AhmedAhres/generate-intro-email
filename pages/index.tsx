@@ -60,8 +60,8 @@ export default function Home() {
         </h1>
         <h2>
           <a>
-            Introduce yourself like a pro with our easy-to-use email generator
-            powered by AI.
+            Introduce yourself like a pro with our free easy-to-use email
+            generator.
           </a>
         </h2>
 
