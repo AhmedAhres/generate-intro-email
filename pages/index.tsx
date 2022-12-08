@@ -59,7 +59,8 @@ export default function Home() {
       }
       setIsLoading(false);
     } else {
-      setResult(
+      setCopyButton(false);
+      alert(
         "Please make sure you have written a response to the first 3 questions."
       );
     }
