@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import React from "react";
 
@@ -60,9 +61,11 @@ export default function Home() {
       setIsLoading(false);
     } else {
       setCopyButton(false);
-      alert(
-        "Please make sure you have written a response to the first 3 questions."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Please make sure you have written a response to the first 3 questions.",
+      });
     }
   };
 
