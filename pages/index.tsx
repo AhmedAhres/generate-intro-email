@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import React from "react";
 
 export default function Home() {
+  const [responseEmail, setResponseEmail] = useState("");
   const [result, setResult] = useState("");
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
@@ -11,6 +12,7 @@ export default function Home() {
   const [connection, setConnection] = useState("");
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [copyButton, setCopyButton] = useState(false);
   const { Configuration, OpenAIApi } = require("openai");
 
   const configuration = new Configuration({
@@ -19,8 +21,13 @@ export default function Home() {
 
   const openai = new OpenAIApi(configuration);
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
   const writeEmail = async () => {
     if (name && position && reason) {
+      setCopyButton(false);
       setIsLoading(true);
       let prompt = `Generate a confident and professional email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`;
       const response = await openai.createCompletion({
@@ -43,8 +50,10 @@ export default function Home() {
                 </React.Fragment>
               ))
           : "Unable to generate, please check back later or reach out!";
+        setResponseEmail(response.data.choices[0].text);
         setResult(result);
         setIsLoading(false);
+        setCopyButton(true);
       } else {
         setResult("Cannot generate email, please try again later.");
       }
@@ -121,6 +130,18 @@ export default function Home() {
               <p className={styles.generate}>Generating ... </p>
             ) : (
               <p className={styles.result}>{result}</p>
+            )}
+            {copyButton ? (
+              <button
+                className={styles.button}
+                onClick={() => {
+                  copyToClipboard(responseEmail);
+                }}
+              >
+                Copy email
+              </button>
+            ) : (
+              <p></p>
             )}
           </div>
         </div>
