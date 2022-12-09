@@ -56,7 +56,7 @@ export default function Home() {
         setIsLoading(false);
         setCopyButton(true);
       } else {
-        setResult("Cannot generate email, please try again later.");
+        setResult("Too many requests, please try again in a few minutes.");
       }
       setIsLoading(false);
     } else {
