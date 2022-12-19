@@ -2,6 +2,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
+import { AnalyticsBrowser } from '@segment/analytics-next'
 import React from "react";
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [copyButton, setCopyButton] = useState(false);
   const { Configuration, OpenAIApi } = require("openai");
+  const analytics = AnalyticsBrowser.load({ writeKey: process.env.NEXT_PUBLIC_SEGMENT_API_KEY, })
 
   const configuration = new Configuration({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
@@ -24,6 +26,9 @@ export default function Home() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    analytics.track('Copied email', {
+      result: text
+    });
   };
 
   const writeEmail = async () => {
@@ -55,6 +60,10 @@ export default function Home() {
         setResult(result);
         setIsLoading(false);
         setCopyButton(true);
+        analytics.track('User prompt + Generated email', {
+          user_prompt: prompt,
+          email: response.data.choices[0].text
+        });
       } else {
         setResult("Too many requests, please try again in a few minutes.");
       }
