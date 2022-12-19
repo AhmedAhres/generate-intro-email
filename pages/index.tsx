@@ -16,7 +16,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [copyButton, setCopyButton] = useState(false);
   const { Configuration, OpenAIApi } = require("openai");
-  const analytics = AnalyticsBrowser.load({ writeKey: process.env.NEXT_PUBLIC_SEGMENT_API_KEY, })
+  const analytics = AnalyticsBrowser.load({
+  writeKey: typeof process.env.NEXT_PUBLIC_SEGMENT_API_KEY === 'string'
+    ? process.env.NEXT_PUBLIC_SEGMENT_API_KEY
+    : '',
+});
 
   const configuration = new Configuration({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
