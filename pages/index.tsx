@@ -52,14 +52,9 @@ export default function Home() {
         }
       );
       if (response) {
-        let result = response.bestResult
-          ? response.bestResult.split("\n").map((line: any, index: any) => (
-              <React.Fragment key={index}>
-                <br />
-                {line}
-              </React.Fragment>
-            ))
-          : "Unable to generate, please check back later or reach out!";
+        let result =
+          response.bestResult ??
+          "Unable to generate, please check back later or reach out!";
         setResponseEmail(response.bestResult);
         setResult(result);
         setIsLoading(false);
