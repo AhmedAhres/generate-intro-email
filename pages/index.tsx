@@ -2,7 +2,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
-import { AnalyticsBrowser } from '@segment/analytics-next'
+import { AnalyticsBrowser } from "@segment/analytics-next";
 import React from "react";
 import { createGenie } from "usegenie";
 
@@ -17,11 +17,12 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [copyButton, setCopyButton] = useState(false);
   const { Configuration, OpenAIApi } = require("openai");
-  const genie = createGenie({apiKey: ""});
+  const genie = createGenie();
   const analytics = AnalyticsBrowser.load({
-  writeKey: typeof process.env.NEXT_PUBLIC_SEGMENT_API_KEY === 'string'
-    ? process.env.NEXT_PUBLIC_SEGMENT_API_KEY
-    : '',
+    writeKey:
+      typeof process.env.NEXT_PUBLIC_SEGMENT_API_KEY === "string"
+        ? process.env.NEXT_PUBLIC_SEGMENT_API_KEY
+        : "",
   });
 
   const configuration = new Configuration({
@@ -32,8 +33,8 @@ export default function Home() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    analytics.track('Copied email', {
-      result: text
+    analytics.track("Copied email", {
+      result: text,
     });
   };
 
@@ -41,29 +42,30 @@ export default function Home() {
     if (name && position && reason) {
       setCopyButton(false);
       setIsLoading(true);
-      const response = await genie.generate("4f4958ab-a3cb-4234-8779-4c2b429e718e", {
-        name: name,
-        position: position,
-        connection: connection,
-        reason: reason
-      });
+      const response = await genie.generate(
+        "4f4958ab-a3cb-4234-8779-4c2b429e718e",
+        {
+          name: name,
+          position: position,
+          connection: connection,
+          reason: reason,
+        }
+      );
       if (response) {
-        let result =  (response as any).firstResult
-          ?  (response as any).firstResult
-              .split("\n")
-              .map((line: any, index: any) => (
-                <React.Fragment key={index}>
-                  <br />
-                  {line}
-                </React.Fragment>
-              ))
+        let result = response.bestResult
+          ? response.bestResult.split("\n").map((line: any, index: any) => (
+              <React.Fragment key={index}>
+                <br />
+                {line}
+              </React.Fragment>
+            ))
           : "Unable to generate, please check back later or reach out!";
-        setResponseEmail( (response as any).firstResult);
+        setResponseEmail(response.bestResult);
         setResult(result);
         setIsLoading(false);
         setCopyButton(true);
-        analytics.track('Generated email', {
-          email:  (response as any).firstResult
+        analytics.track("Generated email", {
+          email: response.bestResult,
         });
       } else {
         setResult("Too many requests, please try again in a few minutes.");
