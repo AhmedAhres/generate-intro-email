@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import { AnalyticsBrowser } from "@segment/analytics-next";
 import React from "react";
-import { createGenie } from "usegenie";
 
 export default function Home() {
   const [responseEmail, setResponseEmail] = useState("");
@@ -17,7 +16,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [copyButton, setCopyButton] = useState(false);
   const { Configuration, OpenAIApi } = require("openai");
-  const genie = createGenie();
   const analytics = AnalyticsBrowser.load({
     writeKey:
       typeof process.env.NEXT_PUBLIC_SEGMENT_API_KEY === "string"
@@ -42,28 +40,42 @@ export default function Home() {
     if (name && position && reason) {
       setCopyButton(false);
       setIsLoading(true);
-      const response = await genie.generate(
-        "4f4958ab-a3cb-4234-8779-4c2b429e718e",
-        {
-          name: name,
-          position: position,
-          connection: connection,
-          reason: reason,
-        }
-      );
-      if (response) {
-        let result =
-          response.bestResult ??
-          "Unable to generate, please check back later or reach out!";
-        setResponseEmail(response.bestResult);
+      let prompt = `Generate a confident and professional email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`;
+      analytics.track('User prompt', {
+        user_prompt: prompt
+      });
+      const response = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: prompt,
+        temperature: 0.7,
+        max_tokens: 1000,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      });
+      if (response.status == "200") {
+        let result = response.data.choices
+          ? response.data.choices[0].text
+              .split("\n")
+              .map((line: any, index: any) => (
+                <React.Fragment key={index}>
+                  <br />
+                  {line}
+                </React.Fragment>
+              ))
+          : "Unable to generate, please check back later or reach out!";
+        setResponseEmail(response.data.choices[0].text);
         setResult(result);
         setIsLoading(false);
         setCopyButton(true);
-        analytics.track("Generated email", {
-          email: response.bestResult,
+        analytics.track('Generated email', {
+          email: response.data.choices[0].text
         });
       } else {
         setResult("Too many requests, please try again in a few minutes.");
+        analytics.track('Error', {
+          error: response.status_code
+        });
       }
       setIsLoading(false);
     } else {
