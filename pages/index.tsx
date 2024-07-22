@@ -33,7 +33,7 @@ export default function Home() {
       const messages = [
         {
           role: "system",
-          content: "You are an assistant that generates professional emails.",
+          content: "You are an assistant that generates professional emails. Simply output the email text, nothing else.",
         },
         {
           role: "user",
