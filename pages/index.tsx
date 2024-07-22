@@ -60,7 +60,7 @@ export default function Home() {
                 </React.Fragment>
               ))
           : "Unable to generate, please check back later or reach out!";
-        setResponseEmail(response.data.choices[0].text);
+        setResponseEmail(response.data.choices[0].message.content);
         setResult(result);
         setIsLoading(false);
         setCopyButton(true);
