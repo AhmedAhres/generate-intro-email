@@ -51,7 +51,7 @@ export default function Home() {
       });
       if (response.status == "200") {
         let result = response.data.choices
-          ? response.data.choices[0].text
+          ? response.data.choices[0].message.content
               .split("\n")
               .map((line: any, index: any) => (
                 <React.Fragment key={index}>
