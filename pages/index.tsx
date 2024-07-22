@@ -30,10 +30,19 @@ export default function Home() {
     if (name && position && reason) {
       setCopyButton(false);
       setIsLoading(true);
-      let prompt = `Generate a confident and professional email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`;
-      const response = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: prompt,
+      const messages = [
+        {
+          role: "system",
+          content: "You are an assistant that generates professional emails.",
+        },
+        {
+          role: "user",
+          content: `Generate a confident and professional email to ${name} who is a ${position} that I came to know because ${connection}. Goal: ${reason}.`,
+        },
+      ];
+      const response = await openai.createChatCompletion({
+        model: "gpt-4o",
+        messages: messages,
         temperature: 0.7,
         max_tokens: 1000,
         top_p: 1,
